@@ -1,0 +1,30 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: form vulnerable index.php
+      id: form-vulnerable-index-php
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: form vulnerable index.php
+        setup-command: cd .test ; npm install
+        command: HEADLESS=true npm test form-vulnerable
+        timeout: 10
+        max-score: 5
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        FORM-VULNERABLE-INDEX-PHP_RESULTS: "${{steps.form-vulnerable-index-php.outputs.result}}"
+      with:
+        runners: form-vulnerable-index-php
