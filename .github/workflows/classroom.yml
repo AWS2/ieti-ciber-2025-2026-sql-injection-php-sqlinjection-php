@@ -22,9 +22,19 @@ jobs:
         command: HEADLESS=true npm test form-vulnerable
         timeout: 10
         max-score: 5
+    - name: form invulnerable index2.php
+      id: form-invulnerable-index2-php
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: form invulnerable index2.php
+        setup-command: cd .test ; npm install
+        command: HEADLESS=true npm test form-invulnerable
+        timeout: 10
+        max-score: 5
     - name: Autograding Reporter
       uses: classroom-resources/autograding-grading-reporter@v1
       env:
         FORM-VULNERABLE-INDEX-PHP_RESULTS: "${{steps.form-vulnerable-index-php.outputs.result}}"
+        FORM-INVULNERABLE-INDEX2-PHP_RESULTS: "${{steps.form-invulnerable-index2-php.outputs.result}}"
       with:
-        runners: form-vulnerable-index-php
+        runners: form-vulnerable-index-php,form-invulnerable-index2-php
